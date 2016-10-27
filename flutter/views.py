@@ -46,27 +46,128 @@ def index(request):
 def results(request):
 	# user = get_object_or_404(Info, pk=user_id)
 	# flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
-	# rar = flw.bvn.verify("1111111111", "SMS", "NG")
+	
 	data = request.session['data']
 	bvn = int(data['bvn'])
 	verifyUsing = data['verifyUsing']
 	country = data['country']
+
+	# rar = flw.bvn.verify(bvn, verifyUsing, country)
+	rar = {
+		'data':{
+			'transactionReference':"FLW00293154",
+			'responseMessage':"Successful, pending OTP validation",
+			'responseCode':"00"
+		},
+
+		'status':'success'
+	}
+
+	if rar['status'] == 'success':
+		# resend the BVN OTP, retaining the previous variables, only new variable is transactionReference
+		
+		transactionReference = rar['data']['transactionReference']
+		request.session['data']['transactionReference'] = transactionReference
+		response.write('<h2>Your BVN number has been verfied!</h2>')
+		response.write('<h3>Your Details:</h3>')
+		response.write('<p>'+r['data']['firstName']+ ' ' + r['data']['lastName'] + '</p>')
+		response.write('<p>BVN:'+ str(bvn) + '</p>')
     
-        r = {
+    else:
+       r = {
 		'data': {'firstName': 'Ope',
 		'lastName': 'Onikute',
 		'phone number': '08155718567',
 		}
-	}
-	response = HttpResponse(request)
-	print response
-	response.write('<h2>Your BVN number has been verfied!</h2>')
-	response.write('<h3>Your Details:</h3>')
-	response.write('<p>'+r['data']['firstName']+ ' ' + r['data']['lastName'] + '</p>')
-	response.write('<p>BVN:'+ str(bvn) + '</p>')
+		}
+		response = HttpResponse(request)
+		response.write('<h2>Your BVN verification failed.</h2>')
+		response.write('<h3>Please enter a correct number, or check your internet connection.</h3>')
+		# response.write('<p>'+r['data']['firstName']+ ' ' + r['data']['lastName'] + '</p>')
+		# response.write('<p>BVN:'+ str(bvn) + '</p>')
 	
 
 	return response
+
+# the flow is enter BVN --> enter OTP (with resend OTP) --> Show final Details
+
+def enter_OTP(request):
+	# flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
+	data = request.session['data']
+	bvn = int(data['bvn'])
+	verifyUsing = data['verifyUsing']
+	country = data['country']
+	transactionReference = data['transactionReference']
+
+	if request.method == 'POST':
+		OTP = int(request.POST['OTP'])
+		# r = flw.bvn.validate(bvn, otp, transactionReference, country)
+		r = {
+		'data': {
+			'firstName':'Ope',
+			'lastName':'Onikute',
+			'phoneNumber':'08155718567',
+			'enrollmentBank':'044',
+			'bvn':'11111111111',
+			'responseMessage':'Completed successfully',			
+		},
+		'status':'success'
+		}
+		
+		if r['status']=='success':
+			response = HttpResponse()
+			response.write('<h2>You have successfully validated your BVN!</h2><br>')
+			response.write('<h3>Your bank details are:</h3><br>')
+			response.write('<h4>Name</h4>')
+			response.write('<p>' + r['data']['firstName'] + ' ' + r['data']['lastName'] + '</p><br>')
+			response.write('<h4>Phone Number</h4>')
+			response.write('<p>' + r['data']['phoneNumber'] + '</p><br>')
+			response.write('<h4>Bank sort code</h4>')
+			response.write('<p>' + r['data']['enrollmentBank'] + '</p><br>')
+			response.write('<h4>BVN number</h4>')
+			response.write('<p>' + r['data']['bvn'] + '</p><br>')
+			return response
+
+
+		else:
+			response = HttpResponse()
+			response.write('<p>BVN validation failed, please try again.</p>')
+			response.write('<button>Back</button>')
+			return response
+
+
+
+
+	return render(request, 'flutter/enterOTP.html')
+
+def resend_OTP(request):
+	# flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
+	data = request.session['data']
+	bvn = int(data['bvn'])
+	verifyUsing = data['verifyUsing']
+	country = data['country']
+	transactionReference = rar['data']['transactionReference']
+	
+	# resend = flw.resendOtp(verifyUsing, transactionReference, country)
+		resend = {
+			'data':{
+			'responsemessage':"Successful, pending OTP validation",
+			'responscode':"00"
+		},
+
+		'status':'success'
+	}
+
+	if resend['status'] == 'success':
+		return HttpResponseRedirect(reverse('flutter:results'))
+
+	else:
+		response = HttpResponse()
+		response.write('<p>OTP resend failed. Please check you internet connection, or contact your network provider.</p>')
+		response.write('<button href ={% url "flutter:results" %}>Back</button>')
+		return response()
+
+
 
 # class IndexView(generic.DetailView):
 # 	model = Info
