@@ -1,10 +1,15 @@
+import envvars
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views import generic
-from django.utils import timezone
+from django.core.urlresolvers import reverse 
 from .models import Info
 from .forms import InfoForm
 
+
+FLUTTER_MERCHANT_KEY = envvars.get('FLUTTER_MERCHANT_KEY')
+FLUTTER_TEST_API_KEY = envvars.get('FLUTTER_TEST_API_KEY')
+from flutterwave import Flutterwave
+flw  = Flutterwave()
 # Create your views here.
 
 
@@ -20,8 +25,8 @@ def index(request):
         if form.is_valid():
             print 'valid'
             save_it = form.save(commit=False)
-	    	save_it.save()
-	    	return HttpResponseRedirect(reverse('flutter:results'))
+	    save_it.save()
+	    return HttpResponseRedirect(reverse('flutter:results'))
 	else:
 	    print 'Invalid'
 	    print form.errors
