@@ -6,12 +6,11 @@ from .models import Info
 from .forms import InfoForm
 from flutterwave import Flutterwave
 
+# = envvars.get('FLUTTER_MERCHANT_KEY') 
+# = envvars.get('FLUTTER_TEST_API_KEY')
 
-
-FLUTTER_MERCHANT_KEY = envvars.get('FLUTTER_MERCHANT_KEY')
-FLUTTER_TEST_API_KEY = envvars.get('FLUTTER_TEST_API_KEY')
-flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
-r = flw.bvn.verify("1111111111", "SMS", "NG")
+FLUTTER_MERCHANT_KEY = 'tk_UiszH5RVYr' 
+FLUTTER_TEST_API_KEY  = 'tk_V0DiBQAymY5ZkWJOnxPM'
 # Create your views here.
 
 
@@ -22,6 +21,9 @@ def index(request):
 
     if request.method == 'POST':
     	print 'posting!'
+    	bvn = int(request.POST['bvn'])
+    	verifyUsing = request.POST['verfyUsing']
+    	country = request.POST['country']
         form = InfoForm(request.POST)
 
         if form.is_valid():
@@ -40,7 +42,9 @@ def index(request):
 
 def results(request):
 	# user = get_object_or_404(Info, pk=user_id)
-
+	# flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
+	# rar = flw.bvn.verify("1111111111", "SMS", "NG")
+	print request.POST
 	r = {
 		'data': {'firstName': 'Ope',
 		'lastName': 'Onikute',
