@@ -4,12 +4,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse 
 from .models import Info
 from .forms import InfoForm
+from flutterwave import Flutterwave
+
 
 
 FLUTTER_MERCHANT_KEY = envvars.get('FLUTTER_MERCHANT_KEY')
 FLUTTER_TEST_API_KEY = envvars.get('FLUTTER_TEST_API_KEY')
-from flutterwave import Flutterwave
-flw  = Flutterwave()
+flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
+r = flw.bvn.verify("1111111111", "SMS", "NG")
 # Create your views here.
 
 
