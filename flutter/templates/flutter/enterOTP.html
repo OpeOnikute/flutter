@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+
 	
 	{% block content %}
-
-	<form action="{% url 'flutter:index' %}" method="POST"> 
+	<form action="{% url 'flutter:enter_otp' %}" method="POST"> 
 	    {% csrf_token %}
 		    {% if form.non_field_errors %}
 	        <div class="form-group text-error">
@@ -11,10 +11,8 @@
 		        </div>
 		    {% endif %}
 
-		 
-				
-		{{ form.as_p }}
+		 <input placeholder="Enter the code you received." name="OTP" type="text" tabindex="1" required autofocus>
 		<input type='submit'>
 	</form>	
-
 	{% endblock %}
+
