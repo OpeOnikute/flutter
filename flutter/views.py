@@ -21,9 +21,12 @@ def index(request):
 
     if request.method == 'POST':
     	print 'posting!'
+    	request.session['data'] = request.POST
     	bvn = int(request.POST['bvn'])
-    	verifyUsing = request.POST['verfyUsing']
+    	verifyUsing = request.POST['verifyUsing']
     	country = request.POST['country']
+    	context_list = [bvn, verifyUsing, country]
+        
         form = InfoForm(request.POST)
 
         if form.is_valid():
@@ -44,8 +47,12 @@ def results(request):
 	# user = get_object_or_404(Info, pk=user_id)
 	# flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
 	# rar = flw.bvn.verify("1111111111", "SMS", "NG")
-	print request.POST
-	r = {
+	data = request.session['data']
+	bvn = int(data['bvn'])
+	verifyUsing = data['verifyUsing']
+	country = data['country']
+    
+        r = {
 		'data': {'firstName': 'Ope',
 		'lastName': 'Onikute',
 		'phone number': '08155718567',
@@ -53,8 +60,11 @@ def results(request):
 	}
 	response = HttpResponse(request)
 	print response
+	response.write('<h2>Your BVN number has been verfied!</h2>')
+	response.write('<h3>Your Details:</h3>')
 	response.write('<p>'+r['data']['firstName']+ ' ' + r['data']['lastName'] + '</p>')
-	response.write('<p>'+r['data']['phone number'] + '</p>')
+	response.write('<p>BVN:'+ str(bvn) + '</p>')
+	
 
 	return response
 
