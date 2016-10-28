@@ -1,15 +1,20 @@
 {% load staticfiles %}
 <!doctype html>
-<html>
+<html lang="en">
 	<head>
-		<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}"/>
+	<meta charset="utf-8">
+    <title>Flutter</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}"/>
 	</head>
 
 
 
 	<body>
+	<div class="main-container" style="text-align:center">
 	
 	{% block content %}{% endblock %}
+	</div>
 
 
 </html>

@@ -2,21 +2,30 @@
 {% load static %}
 	
 	{% block content %}
-	<h1>Welcome to Flutter!</h1>
-	<h2>Let's verify your BVN</h2>
 
-	<form action="{% url 'flutter:index' %}" method="POST"> 
+	<br><br><br><br><br><br>
+	<div class='container-fluid'>
+	<h1>Welcome to Flutter!</h1>
+	<h4>Let's verify your BVN</h4>
+	</div>
+	<br>
+	
+	<div class="container-fluid">
+	<form class='form-horizontal' action="{% url 'flutter:index' %}" method="POST">
+		<div class='form-group'> 
 	    {% csrf_token %}
 		    {% if form.non_field_errors %}
 	        <div class="form-group text-error">
 	            {{ form.non_field_errors }}
 		        </div>
 		    {% endif %}
-
-		 
-				
-		{{ form.as_p }}
+			{{ form.as_p }}
 		<input type='submit'>
+		</div>
 	</form>	
+
+	
+
+	</div>
 
 	{% endblock %}

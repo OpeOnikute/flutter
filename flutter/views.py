@@ -32,8 +32,8 @@ def index(request):
         if form.is_valid():
             print 'valid'
             save_it = form.save(commit=False)
-        save_it.save()
-        return HttpResponseRedirect(reverse('flutter:results'))
+            save_it.save()
+            return HttpResponseRedirect(reverse('flutter:results'))
     else:
         print 'Invalid'
         print form.errors

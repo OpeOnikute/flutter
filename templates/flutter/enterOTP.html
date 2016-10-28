@@ -3,6 +3,9 @@
 
 	
 	{% block content %}
+	<br><br><br><br><br><br>
+	<h3>A four-digit code would be sent to you</h3>
+	<br>
 	<form action="{% url 'flutter:enter_otp' %}" method="POST"> 
 	    {% csrf_token %}
 		    {% if form.non_field_errors %}
