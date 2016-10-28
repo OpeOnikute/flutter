@@ -21,6 +21,8 @@ class Info(models.Model):
 	country = models.CharField(blank=True, null=True, max_length=30,
 						choices=country_codes)
 
+	transactionReference = models.CharField(blank=True, null=True,
+                                    max_length=30)
 	def __unicode__(self):
 		return self.name
 

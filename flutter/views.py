@@ -46,12 +46,11 @@ def index(request):
 def results(request):
     # user = get_object_or_404(Info, pk=user_id)
     # flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
-    
     data = request.session['data']
+    name_string = data['name'][0]
     bvn = data['bvn']
     verifyUsing = data['verifyUsing']
-    country = data['country']
-
+    country = str(data['country'])
     # rar = flw.bvn.verify(bvn, verifyUsing, country)
     rar = {
         'data':{
@@ -64,11 +63,12 @@ def results(request):
     }
 
     if rar['status'] == 'success':
-        # resend the BVN OTP, retaining the previous variables, only new variable is transactionReference
-        
         transactionReference = rar['data']['transactionReference']
-        request.session['data'].update(transactionReference = transactionReference)
-        # print request.POST
+        # resend the BVN OTP, retaining the previous variables, only new variable is transactionReference
+        to_save = Info.objects.get(name=name_string)
+        to_save.transactionReference = transactionReference
+        to_save.save(update_fields=['transactionReference'])
+        
         return HttpResponseRedirect(reverse('flutter:enter_otp' ))
     else:
         r = {
@@ -91,12 +91,14 @@ def results(request):
 def enter_OTP(request):
     # flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
-    print data
+    name_string = data['name'][0]
     bvn = data['bvn']
     verifyUsing = data['verifyUsing']
     country = data['country']
-    transactionReference = data['transactionReference']
-
+    
+    to_save = Info.objects.get(name=name_string)
+    transactionReference = to_save.transactionReference
+    
     if request.method == 'POST':
         OTP = int(request.POST['OTP'])
         # r = flw.bvn.validate(bvn, otp, transactionReference, country)
@@ -130,7 +132,7 @@ def enter_OTP(request):
         else:
             response = HttpResponse()
             response.write('<p>BVN validation failed, please try again.</p>')
-            response.write('<button>Back</button>')
+            response.write('<a href ={% url "flutter:results" %}>Back</a>')
             return response
 
 
@@ -141,10 +143,13 @@ def enter_OTP(request):
 def resend_OTP(request):
     # flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
-    bvn = int(data['bvn'])
+    name_string = data['name'][0]
+    bvn = data['bvn']
     verifyUsing = data['verifyUsing']
     country = data['country']
-    transactionReference = rar['data']['transactionReference']
+    to_save = Info.objects.get(name=name_string)
+    transactionReference = to_save.transactionReference
+    
     
     # resend = flw.resendOtp(verifyUsing, transactionReference, country)
     resend = {
@@ -153,7 +158,7 @@ def resend_OTP(request):
             'responscode':"00"
         },
 
-        'status':'success'
+        'status':'failed'
     }
 
     if resend['status'] == 'success':
@@ -162,8 +167,8 @@ def resend_OTP(request):
     else:
         response = HttpResponse()
         response.write('<p>OTP resend failed. Please check you internet connection, or contact your network provider.</p>')
-        response.write('<button href ={% url "flutter:results" %}>Back</button>')
-        return response()
+        response.write('<a href ={% url "flutter:enter_otp" %}>Back</a>')
+        return response
 
 
 

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+	
+	{% block content %}
+
+	<form action="{% url 'flutter:index' %}" method="POST"> 
+	    {% csrf_token %}
+		    {% if form.non_field_errors %}
+	        <div class="form-group text-error">
+	            {{ form.non_field_errors }}
+		        </div>
+		    {% endif %}
+
+		 
+				
+		{{ form.as_p }}
+		<input type='submit'>
+	</form>	
+
+	{% endblock %}

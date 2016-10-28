@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+	
+	{% block content %}
+	<form action="{% url 'flutter:enter_otp' %}" method="POST"> 
+	    {% csrf_token %}
+		    {% if form.non_field_errors %}
+	        <div class="form-group text-error">
+	            {{ form.non_field_errors }}
+		        </div>
+		    {% endif %}
+
+		<input placeholder="Enter the code." name="OTP" type="text" required><br>
+		<a class='btn' href="{% url 'flutter:resend_otp' %}">Resend Code</a>
+		<input type='submit'>
+	</form>	
+	{% endblock %}
+
