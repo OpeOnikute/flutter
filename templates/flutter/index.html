@@ -2,6 +2,8 @@
 {% load static %}
 	
 	{% block content %}
+	<h1>Welcome to Flutter!</h1>
+	<h2>Let's verify your BVN</h2>
 
 	<form action="{% url 'flutter:index' %}" method="POST"> 
 	    {% csrf_token %}

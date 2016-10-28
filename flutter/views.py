@@ -115,25 +115,43 @@ def enter_OTP(request):
         }
         
         if r['status']=='success':
-            response = HttpResponse()
-            response.write('<h2>You have successfully validated your BVN!</h2><br>')
-            response.write('<h3>Your bank details are:</h3><br>')
-            response.write('<h4>Name</h4>')
-            response.write('<p>' + r['data']['firstName'] + ' ' + r['data']['lastName'] + '</p><br>')
-            response.write('<h4>Phone Number</h4>')
-            response.write('<p>' + r['data']['phoneNumber'] + '</p><br>')
-            response.write('<h4>Bank sort code</h4>')
-            response.write('<p>' + r['data']['enrollmentBank'] + '</p><br>')
-            response.write('<h4>BVN number</h4>')
-            response.write('<p>' + r['data']['bvn'] + '</p><br>')
-            return response
+            status = 'success'
+            name = r['data']['firstName'] + ' ' + r['data']['lastName']
+            phone_number = r['data']['phoneNumber']
+            sortcode = r['data']['enrollmentBank']
+            bvn_no = r['data']['bvn']
+            # response = HttpResponse()
+            # response.write('<h2>You have successfully validated your BVN!</h2><br>')
+            # response.write('<h3>Your bank details are:</h3><br>')
+            # response.write('<h4>Name</h4>')
+            # response.write('<p>' + r['data']['firstName'] + ' ' + r['data']['lastName'] + '</p><br>')
+            # response.write('<h4>Phone Number</h4>')
+            # response.write('<p>' + r['data']['phoneNumber'] + '</p><br>')
+            # response.write('<h4>Bank sort code</h4>')
+            # response.write('<p>' + r['data']['enrollmentBank'] + '</p><br>')
+            # response.write('<h4>BVN number</h4>')
+            # response.write('<p>' + r['data']['bvn'] + '</p><br>')
+            # return response
+
+            context = {
+            'status':status,
+            'name':name, 
+            'phone_number':phone_number,
+            'sortcode':sortcode,
+            'bvn_no':bvn_no, 
+            }
+
+            return render(request, 'flutter/results.html', context)
 
 
         else:
-            response = HttpResponse()
+            status = 'failed'
+            context = {
+            'status':status,
+            }
             response.write('<p>BVN validation failed, please try again.</p>')
             response.write('<a href ={% url "flutter:results" %}>Back</a>')
-            return response
+            return render(request, 'flutter/results.html', context)
 
 
 
@@ -165,21 +183,7 @@ def resend_OTP(request):
         return HttpResponseRedirect(reverse('flutter:results'))
 
     else:
-        response = HttpResponse()
-        response.write('<p>OTP resend failed. Please check you internet connection, or contact your network provider.</p>')
-        # response.write('<a href ={% url "flutter:enter_otp" %}>Back</a>')
-        response.write('<input type="button" value="Back" onClick="history.go(-1);return true;">')
-        return response
+        return render(request, 'flutter/resend_failed.html')
 
 
 
-# class IndexView(generic.DetailView):
-#   model = Info
-#   template_name = 'flutter/index.html'
-
-#   def query_set(self):
-#       """
-#       Excludes any users that arent published yet.
-#       """
-#       form = InfoForm()
-#       return Info.objects.filter(pub_date__lte=timezone.now())

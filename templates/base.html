@@ -1,15 +1,14 @@
-{% load static %}
+{% load staticfiles %}
 <!doctype html>
 <html>
 	<head>
-		<link rel='stylesheet' type='text/css' href="{% static 'flutter/style.css' %}"/>
+		<link rel='stylesheet' type='text/css' href="{% static 'css/bootstrap.min.css' %}"/>
 	</head>
 
 
 
 	<body>
-	<h1>Welcome to Flutter!</h1>
-	<h2>Let's verify your BVN</h2>
+	
 	{% block content %}{% endblock %}
 
 

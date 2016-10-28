@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+	
+	{% block content %}
+	{% if status = "success" %}
+	<h2>You have successfully validated your BVN!</h2><br>
+    <h3>Your bank details are:</h3><br>
+    <h4>Name</h4>
+    <p> {{ name }} </p><br>
+    <h4>Phone Number</h4>
+    <p> {{phone_number}} </p><br>
+    <h4>Bank sort code</h4>
+    <p> {{sortcode}} </p><br>
+    <h4>BVN number</h4>
+    <p> {{bvn_no}}  </p><br>
+    {% else %}
+    <h4>BVN validation failed, please try again.</h4>
+    <a href ='{% url "flutter:results" %}'>Back</a>
+    {% endif %}
+    {% endblock %}

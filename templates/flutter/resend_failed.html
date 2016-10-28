@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+	
+	{% block content %}
+	<h4>OTP resend failed. Please check you internet connection, or contact your network provider.</h4>
+    <input type="button" value="Back" onClick="history.go(-1);return true;">
+    {% endblock %}
