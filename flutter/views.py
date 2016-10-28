@@ -167,7 +167,8 @@ def resend_OTP(request):
     else:
         response = HttpResponse()
         response.write('<p>OTP resend failed. Please check you internet connection, or contact your network provider.</p>')
-        response.write('<a href ={% url "flutter:enter_otp" %}>Back</a>')
+        # response.write('<a href ={% url "flutter:enter_otp" %}>Back</a>')
+        response.write('<input type="button" value="Back" onClick="history.go(-1);return true;">')
         return response
 
 
