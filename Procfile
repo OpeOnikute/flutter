@@ -1,1 +1,1 @@
-"web: python app.py" 
+web: gunicorn myproject.wsgi --log-file -

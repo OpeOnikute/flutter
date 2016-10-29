@@ -28,6 +28,7 @@ def index(request):
         context_list = [bvn, verifyUsing, country]
         
         form = InfoForm(request.POST)
+        print form.as_p()
 
         if form.is_valid():
             print 'valid'

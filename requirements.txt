@@ -6,4 +6,6 @@ flutterwave==1.0.7
 oauthlib==1.0.3
 psycopg2==2.6.2
 pycrypto==2.6.1
+whitenoise==3.2.2
+gunicorn==19.6.0
 dj-database-url==0.3.0 -e git+https://github.com/nwcell/psycopg2-windows.git@win64-py34#egg=psycopg2
