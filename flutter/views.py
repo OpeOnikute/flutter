@@ -23,22 +23,20 @@ def index(request):
     if request.method == 'POST':
         print 'posting!'
         request.session['data'] = dict(request.POST)
-        bvn = int(request.POST['bvn'])
-        verifyUsing = request.POST['verifyUsing']
-        country = request.POST['country']
+        bvn = request.POST['bvn'][0]
+        verifyUsing = request.POST['verifyUsing'][0]
+        country = request.POST['country'][0]
         context_list = [bvn, verifyUsing, country]
         
         form = InfoForm(request.POST)
-        print form.as_p()
-
         if form.is_valid():
             print 'valid'
             save_it = form.save(commit=False)
             save_it.save()
             return HttpResponseRedirect(reverse('flutter:results'))
-    else:
-        print 'Invalid'
-        print form.errors
+        else:
+            print 'Invalid'
+            print form.errors
 
 
 
@@ -50,9 +48,9 @@ def results(request):
     flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
     name_string = data['name'][0]
-    bvn = data['bvn']
-    verifyUsing = data['verifyUsing']
-    country = str(data['country'])
+    bvn = data['bvn'][0]
+    verifyUsing = data['verifyUsing'][0]
+    country = data['country'][0]
     rar = flw.bvn.verify(bvn, verifyUsing, country)
     json_dict = json.loads(rar.text)
     # rar = {
@@ -92,12 +90,13 @@ def enter_OTP(request):
     flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
     name_string = data['name'][0]
-    bvn = data['bvn']
-    verifyUsing = data['verifyUsing']
-    country = data['country']
+    bvn = data['bvn'][0]
+    verifyUsing = data['verifyUsing'][0]
+    country = data['country'][0]
     
     to_save = Info.objects.get(name=name_string)
     transactionReference = to_save.transactionReference
+    print transactionReference
     
     if request.method == 'POST':
         otp = request.POST['OTP'][0]
