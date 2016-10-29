@@ -1,19 +1,41 @@
 {% extends "base.html" %}
 {% load static %}
 	
+	<style type="text/css">
+		p{
+			color: #fff;
+		}
+	</style>
+	
 	{% block content %}
+
 	{% if status = "success" %}
 	<br><br><br><br><br><br>
 	<h2>You have successfully validated your BVN!</h2><br>
-    <h3>Your bank details are:</h3><br>
-    <h4>Name</h4>
-    <p> {{ name }} </p><br>
-    <h4>Phone Number</h4>
-    <p> {{phone_number}} </p><br>
-    <h4>Bank sort code</h4>
-    <p> {{sortcode}} </p><br>
-    <h4>BVN number</h4>
-    <p> {{bvn_no}}  </p><br>
+	<div class="row" style="border-color:#000, border-width:20px;">
+		<div class="col-xs-0 col-sm-2 col-lg-4"></div>
+		<div class="col-xs-12 col-sm-8 col-lg-4" style="padding:0px 70px;">
+			<div style="background-color:#e9e9e9;padding:20px 0px;  ">
+				<div class="row">
+					<div class="col-xs-1"></div>
+					<div class="col-xs-10">
+					
+				    <h3>Your bank details are:</h3><br>
+				    <h4>Name</h4>
+				    <p> {{ name }} </p><br>
+				    <h4>Phone Number</h4>
+				    <p> {{phone_number}} </p><br>
+				    <h4>Bank sort code</h4>
+				    <p> {{sortcode}} </p><br>
+				    <h4>BVN number</h4>
+				    <p> {{bvn_no}}  </p><br>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-4"></div>
+	</div>
+	
     {% else %}
     <br><br><br><br><br><br>
     <h4>BVN validation failed, please try again.</h4>

@@ -1,28 +1,51 @@
 {% extends "base.html" %}
 {% load static %}
-	
 	{% block content %}
-
+	<style type="text/css">
+		p{
+			text-align: left!important;
+		}
+	</style>
 	<br><br><br><br><br><br>
 	<div class='container-fluid'>
 	<h1>Welcome to Flutter!</h1>
 	<h4>Let's verify your BVN</h4>
 	</div>
 	<br>
-	
-	<div class="container-fluid">
-	<form class='form-horizontal' action="{% url 'flutter:index' %}" method="POST">
-		<div class='form-group'> 
-	    {% csrf_token %}
-		    {% if form.non_field_errors %}
-	        <div class="form-group text-error">
-	            {{ form.non_field_errors }}
-		        </div>
-		    {% endif %}
-			{{ form.as_p }}
-		<input type='submit'>
+	<div class="row">
+		<div class="col-xs-0 col-sm-2 col-lg-4"></div>
+		<div class="col-xs-12 col-sm-8 col-lg-4" style="padding:0px 70px">
+			<div style="background-color:#e9e9e9;padding:20px 0px;">
+				<div class="row">
+					<div class="col-xs-1"></div>
+					<div class="col-xs-10">
+						<form class='form-horizontal' action="{% url 'flutter:index' %}" method="POST">
+							<div class='form-group'> 
+						    {% csrf_token %}
+							    {% if form.non_field_errors %}
+						        <div class="form-group text-error">
+						            {{ form.non_field_errors }}
+							        </div>
+							    {% endif %}
+								{{ form.as_p }}
+							<br>
+							<input type='submit' class="btn btn-primary btn-md" style="width:100%; background-color:#000; border-color:#000;">
+							</div>
+						</form>	
+					</div>
+				</div>
+			</div>
 		</div>
-	</form>	
+		<div class="col-xs-4"></div>
+	</div>
+	<script type="text/javascript">
+		jQuery(document).ready(function(){
+			$('#id_name').addClass('form-control');
+			$('#id_bvn').addClass('form-control');
+			$('#id_verifyUsing').addClass('form-control');
+			$('#id_country').addClass('form-control');
+		});
+	</script>
 
 	
 
