@@ -76,6 +76,7 @@ WSGI_APPLICATION = 'flutter_bvn.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 import dj_database_url
 db_from_env = dj_database_url.config()
+DATABASES = {}
 DATABASES['default'].update(db_from_env)
 # DATABASES = {
 #     'default': {
