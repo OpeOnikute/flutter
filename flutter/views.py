@@ -1,4 +1,5 @@
 import envvars
+import json
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse 
@@ -53,6 +54,7 @@ def results(request):
     verifyUsing = data['verifyUsing']
     country = str(data['country'])
     rar = flw.bvn.verify(bvn, verifyUsing, country)
+    json_dict = json.loads(rar.text)
     # rar = {
     #     'data':{
     #         'transactionReference':"FLW00293154",
@@ -63,9 +65,8 @@ def results(request):
     #     'status':'success'
     # }
 
-    if rar['status'] == 'success':
-        transactionReference = rar['data']['transactionReference']
-        # resend the BVN OTP, retaining the previous variables, only new variable is transactionReference
+    if json_dict['status'] == 'success':
+        transactionReference = json_dict['data']['transactionReference']
         to_save = Info.objects.get(name=name_string)
         to_save.transactionReference = transactionReference
         to_save.save(update_fields=['transactionReference'])
@@ -83,9 +84,7 @@ def results(request):
         response.write('<h3>Please enter a correct number, or check your internet connection.</h3>')
         # response.write('<p>'+r['data']['firstName']+ ' ' + r['data']['lastName'] + '</p>')
         # response.write('<p>BVN:'+ str(bvn) + '</p>')
-    
-
-    return response
+        return response
 
 # the flow is enter BVN --> enter OTP (with resend OTP) --> Show final Details
 
@@ -101,8 +100,9 @@ def enter_OTP(request):
     transactionReference = to_save.transactionReference
     
     if request.method == 'POST':
-        OTP = int(request.POST['OTP'])
+        otp = request.POST['OTP'][0]
         r = flw.bvn.validate(bvn, otp, transactionReference, country)
+        json_dict = json.loads(r.text)
         # r = {
         # 'data': {
         #     'firstName':'Ope',
@@ -115,12 +115,20 @@ def enter_OTP(request):
         # 'status':'success'
         # }
         
-        if r['status']=='success':
+        if json_dict['status']=='success':
             status = 'success'
-            name = r['data']['firstName'] + ' ' + r['data']['lastName']
-            phone_number = r['data']['phoneNumber']
-            sortcode = r['data']['enrollmentBank']
-            bvn_no = r['data']['bvn']
+            if json_dict['data']['firstName'] != None and son_dict['data']['lastName']!= None:
+                status = 'Thankyou for using flutterbvn!'
+                name = json_dict['data']['firstName'] + ' ' + json_dict['data']['lastName']
+                phone_number = json_dict['data']['phoneNumber']
+                sortcode = json_dict['data']['enrollmentBank']
+                bvn_no = json_dict['data']['bvn']
+            else:
+                status = 'Something went wrong. Please try again.'
+                name = 'Sample name'
+                phone_number = '081XXXXXXXXX'
+                sortcode = 'XXXX'
+                bvn_no = 'XXXXXXXXXXX'
             # response = HttpResponse()
             # response.write('<h2>You have successfully validated your BVN!</h2><br>')
             # response.write('<h3>Your bank details are:</h3><br>')
@@ -171,6 +179,7 @@ def resend_OTP(request):
     
     
     resend = flw.resendOtp(verifyUsing, transactionReference, country)
+    json_dict = resend.loads(r.text)
     # resend = {
     #         'data':{
     #         'responsemessage':"Successful, pending OTP validation",
@@ -180,11 +189,10 @@ def resend_OTP(request):
     #     'status':'failed'
     # }
 
-    if resend['status'] == 'success':
+    if json_dict['status'] == 'success':
         return HttpResponseRedirect(reverse('flutter:results'))
 
     else:
         return render(request, 'flutter/resend_failed.html')
-
 
 
