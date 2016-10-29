@@ -63,7 +63,7 @@ def results(request):
     #     'status':'success'
     # }
 
-    if json_dict['status'] == 'success':
+    if json_dict['data']['responseCode'] != 'B01':
         transactionReference = json_dict['data']['transactionReference']
         to_save = Info.objects.get(name=name_string)
         to_save.transactionReference = transactionReference
@@ -71,12 +71,6 @@ def results(request):
         
         return HttpResponseRedirect(reverse('flutter:enter_otp' ))
     else:
-        r = {
-        'data': {'firstName': 'Ope',
-        'lastName': 'Onikute',
-        'phone number': '08155718567',
-        }
-        }
         response = HttpResponse(request)
         response.write('<h2>Your BVN verification failed.</h2>')
         response.write('<h3>Please enter a correct number, or check your internet connection.</h3>')
@@ -153,12 +147,14 @@ def enter_OTP(request):
 
 
         else:
+            request.session.flush()
             status = 'failed'
             context = {
             'status':status,
             }
+            response.write('<br><br><br>')
             response.write('<p>BVN validation failed, please try again.</p>')
-            response.write('<a href ={% url "flutter:results" %}>Back</a>')
+            response.write('<a href ={% url "flutter:index" %}>Back</a>')
             return render(request, 'flutter/results.html', context)
 
 
@@ -170,9 +166,9 @@ def resend_OTP(request):
     flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
     name_string = data['name'][0]
-    bvn = data['bvn']
-    verifyUsing = data['verifyUsing']
-    country = data['country']
+    bvn = data['bvn'][0]
+    verifyUsing = data['verifyUsing'][0]
+    country = data['country'][0]
     to_save = Info.objects.get(name=name_string)
     transactionReference = to_save.transactionReference
     
