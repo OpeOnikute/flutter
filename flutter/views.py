@@ -72,7 +72,7 @@ def results(request):
         return HttpResponseRedirect(reverse('flutter:enter_otp' ))
     else:
         response = HttpResponse(request)
-        response.write('<h2>Your BVN verification failed.</h2>')
+        response.write('<h2>The BVN number you entered is invalid.</h2>')
         response.write('<h3>Please enter a correct number, or check your internet connection.</h3>')
         # response.write('<p>'+r['data']['firstName']+ ' ' + r['data']['lastName'] + '</p>')
         # response.write('<p>BVN:'+ str(bvn) + '</p>')
@@ -90,10 +90,10 @@ def enter_OTP(request):
     
     to_save = Info.objects.get(name=name_string)
     transactionReference = to_save.transactionReference
-    print transactionReference
+    # print transactionReference
     
     if request.method == 'POST':
-        otp = request.POST['OTP'][0]
+        otp = request.POST['OTP']
         r = flw.bvn.validate(bvn, otp, transactionReference, country)
         json_dict = json.loads(r.text)
         # r = {
@@ -110,7 +110,7 @@ def enter_OTP(request):
         
         if json_dict['status']=='success':
             status = 'success'
-            if json_dict['data']['firstName'] != None and son_dict['data']['lastName']!= None:
+            if json_dict['data']['firstName'] != None and json_dict['data']['lastName']!= None:
                 status = 'Thankyou for using flutterbvn!'
                 name = json_dict['data']['firstName'] + ' ' + json_dict['data']['lastName']
                 phone_number = json_dict['data']['phoneNumber']
@@ -152,9 +152,6 @@ def enter_OTP(request):
             context = {
             'status':status,
             }
-            response.write('<br><br><br>')
-            response.write('<p>BVN validation failed, please try again.</p>')
-            response.write('<a href ={% url "flutter:index" %}>Back</a>')
             return render(request, 'flutter/results.html', context)
 
 
