@@ -46,22 +46,22 @@ def index(request):
 
 def results(request):
     # user = get_object_or_404(Info, pk=user_id)
-    # flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
+    flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
     name_string = data['name'][0]
     bvn = data['bvn']
     verifyUsing = data['verifyUsing']
     country = str(data['country'])
-    # rar = flw.bvn.verify(bvn, verifyUsing, country)
-    rar = {
-        'data':{
-            'transactionReference':"FLW00293154",
-            'responseMessage':"Successful, pending OTP validation",
-            'responseCode':"00"
-        },
+    rar = flw.bvn.verify(bvn, verifyUsing, country)
+    # rar = {
+    #     'data':{
+    #         'transactionReference':"FLW00293154",
+    #         'responseMessage':"Successful, pending OTP validation",
+    #         'responseCode':"00"
+    #     },
 
-        'status':'success'
-    }
+    #     'status':'success'
+    # }
 
     if rar['status'] == 'success':
         transactionReference = rar['data']['transactionReference']
@@ -90,7 +90,7 @@ def results(request):
 # the flow is enter BVN --> enter OTP (with resend OTP) --> Show final Details
 
 def enter_OTP(request):
-    # flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
+    flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
     name_string = data['name'][0]
     bvn = data['bvn']
@@ -102,18 +102,18 @@ def enter_OTP(request):
     
     if request.method == 'POST':
         OTP = int(request.POST['OTP'])
-        # r = flw.bvn.validate(bvn, otp, transactionReference, country)
-        r = {
-        'data': {
-            'firstName':'Ope',
-            'lastName':'Onikute',
-            'phoneNumber':'08155718567',
-            'enrollmentBank':'044',
-            'bvn':'11111111111',
-            'responseMessage':'Completed successfully',         
-        },
-        'status':'success'
-        }
+        r = flw.bvn.validate(bvn, otp, transactionReference, country)
+        # r = {
+        # 'data': {
+        #     'firstName':'Ope',
+        #     'lastName':'Onikute',
+        #     'phoneNumber':'08155718567',
+        #     'enrollmentBank':'044',
+        #     'bvn':'11111111111',
+        #     'responseMessage':'Completed successfully',         
+        # },
+        # 'status':'success'
+        # }
         
         if r['status']=='success':
             status = 'success'
@@ -160,7 +160,7 @@ def enter_OTP(request):
     return render(request, 'flutter/enterOTP.html')
 
 def resend_OTP(request):
-    # flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
+    flw  = Flutterwave(FLUTTER_TEST_API_KEY, FLUTTER_MERCHANT_KEY, {'debug': True})
     data = request.session['data']
     name_string = data['name'][0]
     bvn = data['bvn']
@@ -170,15 +170,15 @@ def resend_OTP(request):
     transactionReference = to_save.transactionReference
     
     
-    # resend = flw.resendOtp(verifyUsing, transactionReference, country)
-    resend = {
-            'data':{
-            'responsemessage':"Successful, pending OTP validation",
-            'responscode':"00"
-        },
+    resend = flw.resendOtp(verifyUsing, transactionReference, country)
+    # resend = {
+    #         'data':{
+    #         'responsemessage':"Successful, pending OTP validation",
+    #         'responscode':"00"
+    #     },
 
-        'status':'failed'
-    }
+    #     'status':'failed'
+    # }
 
     if resend['status'] == 'success':
         return HttpResponseRedirect(reverse('flutter:results'))
