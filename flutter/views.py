@@ -61,17 +61,17 @@ def results(request):
     bvn = data['bvn'][0]
     verifyUsing = data['verifyUsing'][0]
     country = data['country'][0]
-    # rar = flw.bvn.verify(bvn, verifyUsing, country)
-    # json_dict = json.loads(rar.text)
-    json_dict = {
-        'data':{
-            'transactionReference':"FLW00293154",
-            'responseMessage':"Successful, pending OTP validation",
-            'responseCode':"00"
-        },
+    rar = flw.bvn.verify(bvn, verifyUsing, country)
+    json_dict = json.loads(rar.text)
+    # json_dict = {
+    #     'data':{
+    #         'transactionReference':"FLW00293154",
+    #         'responseMessage':"Successful, pending OTP validation",
+    #         'responseCode':"00"
+    #     },
 
-        'status':'success'
-    }
+    #     'status':'success'
+    # }
 
     if json_dict['data']['responseCode'] != 'B01':
         transactionReference = json_dict['data']['transactionReference']
@@ -180,7 +180,7 @@ def resend_OTP(request):
     transactionReference = to_save.transactionReference
     
     
-    resend = flw.resendOtp(verifyUsing, transactionReference, country)
+    resend = flw.bvn.resendOtp(verifyUsing, transactionReference, country)
     json_dict = resend.loads(r.text)
     # resend = {
     #         'data':{
