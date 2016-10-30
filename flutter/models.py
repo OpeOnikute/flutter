@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.forms import ModelForm
 
 class Info(models.Model):
 	verify = (
@@ -26,3 +27,7 @@ class Info(models.Model):
 	def __unicode__(self):
 		return self.name
 
+class Infoform(ModelForm):
+    class Meta:
+        model = Info
+        fields = ['name', 'bvn', 'verifyUsing', 'country']

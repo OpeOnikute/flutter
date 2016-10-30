@@ -39,14 +39,26 @@ def index(request):
         except Exception as e:
             print e
             form = InfoForm(request.POST)
-            print form
+            # print form
             if form.is_valid():
                 print 'valid'
-                save_it = form.save(commit=False)
-                save_it.save()
+                # print form.cleaned_data['name']
+                obj = Info() #gets new object
+                obj.name = form.cleaned_data['name']
+                print obj.name
+                obj.bvn = form.cleaned_data['bvn']
+                obj.verifyUsing = form.cleaned_data['verifyUsing']
+                obj.country = form.cleaned_data['country']
+                #finally save the object in db
+                obj.save()
+
+                # save_it = form.save(commit=False)
+                # save_it.save()
             else:
                 print 'Invalid'
                 print form.errors
+                return render(request, 'flutter/index.html', {'form':form})
+
         return HttpResponseRedirect(reverse('flutter:results'))
 
 
@@ -193,6 +205,7 @@ def resend_OTP(request):
     # }
 
     if json_dict['status'] == 'success':
+        # resend_alert = 'OTP resent!'
         return HttpResponseRedirect(reverse('flutter:results'))
 
     else:
