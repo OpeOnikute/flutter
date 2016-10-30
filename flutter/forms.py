@@ -6,6 +6,10 @@ class InfoForm(forms.ModelForm):
 	
 	class Meta:
 		model = Info
+		# name = forms.CharField()
+		# bvn = forms.DecimalField()
+		# verifyUsing = forms.CharField()
+		# country = forms.CharField()
 		fields = ('name', 'bvn', 'verifyUsing', 'country')
 		widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Full Name'}),

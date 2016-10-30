@@ -39,6 +39,7 @@ def index(request):
         except Exception as e:
             print e
             form = InfoForm(request.POST)
+            print form
             if form.is_valid():
                 print 'valid'
                 save_it = form.save(commit=False)
@@ -181,7 +182,7 @@ def resend_OTP(request):
     
     
     resend = flw.bvn.resendOtp(verifyUsing, transactionReference, country)
-    json_dict = resend.loads(r.text)
+    json_dict = json.loads(resend.text)
     # resend = {
     #         'data':{
     #         'responsemessage':"Successful, pending OTP validation",
