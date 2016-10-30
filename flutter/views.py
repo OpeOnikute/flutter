@@ -23,20 +23,30 @@ def index(request):
     if request.method == 'POST':
         print 'posting!'
         request.session['data'] = dict(request.POST)
-        bvn = request.POST['bvn'][0]
-        verifyUsing = request.POST['verifyUsing'][0]
-        country = request.POST['country'][0]
+        bvn = request.POST['bvn'] 
+        verifyUsing = request.POST['verifyUsing']
+        country = request.POST['country']
         context_list = [bvn, verifyUsing, country]
         
-        form = InfoForm(request.POST)
-        if form.is_valid():
-            print 'valid'
-            save_it = form.save(commit=False)
-            save_it.save()
-            return HttpResponseRedirect(reverse('flutter:results'))
-        else:
-            print 'Invalid'
-            print form.errors
+        try:
+            print 'Updating'                                        #Check if the inputted value already exists...
+            to_save = Info.objects.get(name=request.POST['name'])   #...If you get an error, it doesnt and you should create a new info
+            to_save.bvn = request.POST['bvn'] 
+            to_save.verifyUsing = request.POST['verifyUsing']
+            to_save.country = request.POST['country']
+            to_save.save()
+            print 'True'
+        except Exception as e:
+            print e
+            form = InfoForm(request.POST)
+            if form.is_valid():
+                print 'valid'
+                save_it = form.save(commit=False)
+                save_it.save()
+            else:
+                print 'Invalid'
+                print form.errors
+        return HttpResponseRedirect(reverse('flutter:results'))
 
 
 
@@ -51,17 +61,17 @@ def results(request):
     bvn = data['bvn'][0]
     verifyUsing = data['verifyUsing'][0]
     country = data['country'][0]
-    rar = flw.bvn.verify(bvn, verifyUsing, country)
-    json_dict = json.loads(rar.text)
-    # rar = {
-    #     'data':{
-    #         'transactionReference':"FLW00293154",
-    #         'responseMessage':"Successful, pending OTP validation",
-    #         'responseCode':"00"
-    #     },
+    # rar = flw.bvn.verify(bvn, verifyUsing, country)
+    # json_dict = json.loads(rar.text)
+    json_dict = {
+        'data':{
+            'transactionReference':"FLW00293154",
+            'responseMessage':"Successful, pending OTP validation",
+            'responseCode':"00"
+        },
 
-    #     'status':'success'
-    # }
+        'status':'success'
+    }
 
     if json_dict['data']['responseCode'] != 'B01':
         transactionReference = json_dict['data']['transactionReference']
