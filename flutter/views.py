@@ -19,13 +19,11 @@ def index(request):
         request.session['data'] = dict(request.POST)
 
         try:
-            print 'Updating'                                        # Check if the inputted value already exists...
-            to_save = Info.objects.get(name=request.POST['name'])   # ...If you get an error, it doesnt and you should create a new info
+            to_save = Info.objects.get(name=request.POST['name'])
             to_save.bvn = request.POST['bvn'] 
             to_save.verifyUsing = request.POST['verifyUsing']
             to_save.country = request.POST['country']
             to_save.save()
-            print 'True'
 
         except Exception, e:
             ErrorLogHelper.log_error(e, 'index_view')
@@ -42,10 +40,7 @@ def index(request):
 
                 obj.save()
 
-                # save_it = form.save(commit=False)
-                # save_it.save()
             else:
-                print 'Invalid'
                 print form.errors
                 return render(request, 'flutter/index.html', {'form':form})
 
@@ -66,16 +61,6 @@ def results(request):
     rar = flw.bvn.verify(bvn, verify_using, country)
     json_dict = json.loads(rar.text)
 
-    # json_dict = {
-    #     'data':{
-    #         'transactionReference':"FLW00293154",
-    #         'responseMessage':"Successful, pending OTP validation",
-    #         'responseCode':"00"
-    #     },
-
-    #     'status':'success'
-    # }
-
     if json_dict['data']['responseCode'] != 'B01':
 
         try:
@@ -92,8 +77,6 @@ def results(request):
         response = HttpResponse(request)
         response.write('<h2>The BVN number you entered is invalid.</h2>')
         response.write('<h3>Please enter a correct number, or check your internet connection.</h3>')
-        # response.write('<p>'+r['data']['firstName']+ ' ' + r['data']['lastName'] + '</p>')
-        # response.write('<p>BVN:'+ str(bvn) + '</p>')
         return response
 
 
@@ -196,14 +179,5 @@ def resend_OTP(request):
 
     except Exception, e:
         ErrorLogHelper.log_error(e, 'resend_OTP')
-
-    # resend = {
-    #         'data':{
-    #         'responsemessage':"Successful, pending OTP validation",
-    #         'responscode':"00"
-    #     },
-
-    #     'status':'failed'
-    # }
 
     return render(request, 'flutter/resend_failed.html')
